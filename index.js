@@ -3,9 +3,12 @@ const bodyParser = require('body-parser')
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const mongoose = require('mongoose');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const Url = require('./models/url');
 
 app.use(cors());
 
@@ -33,8 +36,22 @@ const gettingOriginalUrl = (req, res, next) => {
   
   next();
 }
+const gettingShortUrl = (req, res, next) => {
+  let urlObj = {
+    original_url: req.original_url
+  };
+  let url = new Url(urlObj);
 
-app.route(shortenerPath).post(gettingOriginalUrl);
+  url.save((error, data) => {
+    if (error) return next(error);
+
+    console.log(`short_url: ${data.short_url}`);
+    req.short_url = data.short_url;
+    next(null , data);
+  });
+};
+
+app.route(shortenerPath).post(gettingOriginalUrl, gettingShortUrl);
 
 
 app.listen(port, function() {
