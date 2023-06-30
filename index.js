@@ -94,8 +94,14 @@ const findOriginalUrl = (req, res, next) => {
     next();
   });
 };
+const redirectToOriginalUrl = (req, res, next) => {
+  res.redirect(req.original_url);
+};
 
-app.route(redirectPath).get(findOriginalUrl, errorHandler);
+app.route(redirectPath).get(
+  findOriginalUrl,
+  redirectToOriginalUrl, 
+  errorHandler);
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
