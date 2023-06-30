@@ -80,6 +80,22 @@ app.route(shortenerPath).post(
   errorHandler
 );
 
+const redirectPath = '/api/shorturl/:short_url';
+const findOriginalUrl = (req, res, next) => {
+  let searchByShortUrl = {short_url: req.params.short_url};
+  
+  Url.findOne(searchByShortUrl, (error, data) => {
+    if (error) return next(error);
+    if (!data) return next(new Error('Invalid short url'));
+
+    console.log(`original_url: ${data.original_url}`);
+    req.original_url = data.original_url;
+
+    next();
+  });
+};
+
+app.route(redirectPath).get(findOriginalUrl, errorHandler);
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
