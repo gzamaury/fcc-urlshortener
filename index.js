@@ -1,4 +1,5 @@
 require('dotenv').config();
+const bodyParser = require('body-parser')
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -18,6 +19,23 @@ app.get('/', function(req, res) {
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
+
+// URL Shortener Microservice
+
+// requires body-parser to get the POST parameters
+const encodedDataHandler = bodyParser.urlencoded({extended: false});
+app.use(encodedDataHandler);
+
+const shortenerPath = '/api/shorturl';
+const gettingOriginalUrl = (req, res, next) => {
+  console.log(`original url: ${req.body.url}`);
+  req.original_url = req.body.url;
+  
+  next();
+}
+
+app.route(shortenerPath).post(gettingOriginalUrl);
+
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
