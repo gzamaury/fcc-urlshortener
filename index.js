@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
+const validUrl = require('valid-url');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -32,6 +33,11 @@ app.use(encodedDataHandler);
 const shortenerPath = '/api/shorturl';
 const gettingOriginalUrl = (req, res, next) => {
   console.log(`original url: ${req.body.url}`);
+
+  if (!validUrl.isWebUri(req.body.url)) {
+    return next(new Error('invalid url'));
+  }
+  
   req.original_url = req.body.url;
   
   next();
@@ -47,11 +53,32 @@ const gettingShortUrl = (req, res, next) => {
 
     console.log(`short_url: ${data.short_url}`);
     req.short_url = data.short_url;
-    next(null , data);
+    next();
   });
 };
+const shortenerHandler = (req, res) => {
+  let resObj = {
+    original_url: req.original_url,
+    short_url: req.short_url
+  };
 
-app.route(shortenerPath).post(gettingOriginalUrl, gettingShortUrl);
+  res.json(resObj);
+};
+const errorHandler = (error, req, res, next) => {
+  console.error("Error: " + error.message);
+  let errorObj = {
+    error: error.message
+  };
+
+  res.json(errorObj);
+};
+
+app.route(shortenerPath).post(
+  gettingOriginalUrl, 
+  gettingShortUrl,
+  shortenerHandler,
+  errorHandler
+);
 
 
 app.listen(port, function() {
