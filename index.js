@@ -32,8 +32,6 @@ app.use(encodedDataHandler);
 
 const shortenerPath = '/api/shorturl';
 const gettingOriginalUrl = (req, res, next) => {
-  console.log(`original url: ${req.body.url}`);
-
   if (!validUrl.isWebUri(req.body.url)) {
     return next(new Error('invalid url'));
   }
@@ -51,7 +49,6 @@ const gettingShortUrl = (req, res, next) => {
   url.save((error, data) => {
     if (error) return next(error);
 
-    console.log(`short_url: ${data.short_url}`);
     req.short_url = data.short_url;
     next();
   });
@@ -65,7 +62,6 @@ const shortenerHandler = (req, res) => {
   res.json(resObj);
 };
 const errorHandler = (error, req, res, next) => {
-  console.error("Error: " + error.message);
   let errorObj = {
     error: error.message
   };
@@ -88,7 +84,6 @@ const findOriginalUrl = (req, res, next) => {
     if (error) return next(error);
     if (!data) return next(new Error('Invalid short url'));
 
-    console.log(`original_url: ${data.original_url}`);
     req.original_url = data.original_url;
 
     next();
@@ -102,6 +97,7 @@ app.route(redirectPath).get(
   findOriginalUrl,
   redirectToOriginalUrl, 
   errorHandler);
+
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
