@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const validUrl = require('valid-url');
 
 // Basic Configuration
-const port = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const Url = require('./models/url');
 
@@ -98,7 +97,13 @@ app.route(redirectPath).get(
   redirectToOriginalUrl, 
   errorHandler);
 
+const port = process.env.PORT || 3000;
+let server = app;
 
-app.listen(port, function() {
-  console.log(`Listening on port ${port}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  server = app.listen(port, function () {
+    console.log("Your app is listening on port " + server.address().port);
+  });
+}
+
+module.exports = server;
