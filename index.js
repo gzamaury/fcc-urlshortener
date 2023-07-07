@@ -29,6 +29,9 @@ app.get('/api/hello', function(req, res) {
 const encodedDataHandler = bodyParser.urlencoded({extended: false});
 app.use(encodedDataHandler);
 
+// Needed to parse POST parameters when testing
+app.use(bodyParser.json());
+
 const shortenerPath = '/api/shorturl';
 const gettingOriginalUrl = (req, res, next) => {
   if (!validUrl.isWebUri(req.body.url)) {
