@@ -7,7 +7,7 @@ router.post("/api/shorturl", (req, res, next) => {
   const { url: urlParam } = req.body;
 
   if (!validUrl.isWebUri(urlParam)) {
-    return next(new Error("invalid url"));
+    return res.status(400).json({ error: "invalid url" });
   }
 
   const url = new Url({

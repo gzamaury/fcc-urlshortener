@@ -27,8 +27,7 @@ describe("POST /api/shorturl", () => {
       url: invalidURL,
     });
 
-    // todo: expect(response.status).toBe(400);
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("error", "invalid url");
   });
 

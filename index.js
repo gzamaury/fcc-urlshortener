@@ -29,13 +29,12 @@ app.get("/api/hello", function (req, res) {
 });
 
 const errorHandler = (error, req, res, next) => {
-  res.json({
+  res.status(error.statusCode).json({
     error: error.message,
   });
 };
 
-app.use(shorturlRouter);
-app.use(errorHandler);
+app.use(shorturlRouter, errorHandler);
 
 const port = process.env.PORT || 3000;
 let server = app;
