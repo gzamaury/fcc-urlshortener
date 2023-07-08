@@ -1,10 +1,11 @@
 const request = require("supertest");
 const app = require("../../index");
 const mongoose = require("mongoose");
+const Url = require("../../models/url");
 
 beforeAll(async () => {
   // clear the test database
-  await mongoose.connection.dropDatabase();
+  await Url.deleteMany({});
 });
 
 const invalidURL = "https:/freecodecamp.org";
