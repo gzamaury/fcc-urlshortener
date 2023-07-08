@@ -19,7 +19,9 @@ describe("POST /api/shorturl", () => {
       url: invalidURL,
     });
 
-    expect(response.status).toBe(400);
+    // expect(response.status).toBe(400);
+    // fcc test expect to be 200
+    expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("error", "invalid url");
   });
 
