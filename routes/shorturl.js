@@ -7,7 +7,8 @@ router.post("/api/shorturl", (req, res, next) => {
   const { url: urlParam } = req.body;
 
   if (!validUrl.isWebUri(urlParam)) {
-    return res.status(400).json({ error: "invalid url" });
+    // fcc test expect to be 200
+    return res.status(200).json({ error: "invalid url" });
   }
 
   const url = new Url({
